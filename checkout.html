@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 500px; margin: 2rem auto; padding: 1rem; background-color: #fff; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+        h2 { text-align: center; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; }
+        input, select { width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd; }
+        .checkout-items { margin-bottom: 1rem; }
+        .checkout-item { display: flex; justify-content: space-between; }
+        .btn { width: 100%; padding: 0.75rem; background-color: #ff6347; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        .error { color: red; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Checkout</h2>
+        <div class="checkout-items" id="checkout-items"></div>
+        <p>Total: <span id="checkout-total"></span>đ</p>
+
+        <form id="checkout-form">
+            <!-- Họ và Tên -->
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required>
+                <span class="error" id="name-error"></span>
+            </div>
+
+            <!-- Sốđiện thoại -->
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" required>
+                <span class="error" id="phone-error"></span>
+            </div>
+
+            <!--địa chỉ - Tỉnh/Thành phố -->
+            <div class="form-group">
+                <label for="province">Province/City</label>
+                <select id="province" required>
+                    <option value="">Select Province/City</option>
+                    <option value="Hanoi">Hanoi</option>
+                    <option value="Ho Chi Minh">Ho Chi Minh</option>
+                </select>
+            </div>
+
+            <!--địa chỉ - Quận/Huyện -->
+            <div class="form-group">
+                <label for="district">District</label>
+                <select id="district" required>
+                    <option value="">Select District</option>
+                </select>
+            </div>
+
+            <!--địa chỉ - Phường/Xã -->
+            <div class="form-group">
+                <label for="ward">Ward</label>
+                <select id="ward" required>
+                    <option value="">Select Ward</option>
+                </select>
+            </div>
+
+            <!--địa chỉ chi tiết -->
+            <div class="form-group">
+                <label for="detailed-address">Detailed Address</label>
+                <input type="text" id="detailed-address" required>
+            </div>
+
+            <!-- Ghi chú -->
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <input type="text" id="notes">
+            </div>
+
+            <!-- Hình thức thanh toán -->
+            <div class="form-group">
+                <label for="payment-method">Payment Method</label>
+                <select id="payment-method" required>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="PayPal">PayPal</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Confirm Order</button>
+        </form>
+    </div>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem("cart"));
+        const totalPrice = localStorage.getItem("totalPrice");
+
+        if (!cart || cart.length === 0) {
+            alert("Your cart is empty!");
+            window.location.href = "home.html";
+        } else {
+            document.getElementById("checkout-total").innerText = totalPrice;
+            const checkoutItems = document.getElementById("checkout-items");
+            cart.forEach((item) => {
+                checkoutItems.innerHTML += `
+                    <div class="checkout-item">
+                        <span>${item.name} - ${item.color}, ${item.size}</span>
+                        <span>${item.price}đ</span>
+                    </div>
+                `;
+            });
+        }
+
+        const locationData = {
+            "Hanoi": {
+                "District 1": ["Ward 1", "Ward 2"],
+                "District 2": ["Ward 3", "Ward 4"]
+            },
+            "Ho Chi Minh": {
+                "District A": ["Ward X", "Ward Y"],
+                "District B": ["Ward Z"]
+            }
+        };
+
+        document.getElementById("province").addEventListener("change", function() {
+            const province = this.value;
+            const districtSelect = document.getElementById("district");
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            if (province) {
+                Object.keys(locationData[province]).forEach(district => {
+                    districtSelect.innerHTML += `<option value="${district}">${district}</option>`;
+                });
+            }
+            document.getElementById("ward").innerHTML = '<option value="">Select Ward</option>';
+        });
+
+        document.getElementById("district").addEventListener("change", function() {
+            const province = document.getElementById("province").value;
+            const district = this.value;
+            const wardSelect = document.getElementById("ward");
+            wardSelect.innerHTML = '<option value="">Select Ward</option>';
+            if (province && district) {
+                locationData[province][district].forEach(ward => {
+                    wardSelect.innerHTML += `<option value="${ward}">${ward}</option>`;
+                });
+            }
+        });
+
+        document.getElementById("checkout-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const nameError = document.getElementById("name-error");
+            const namePattern = /^[a-zA-ZÀ-ỹ\s]+$/u;
+            if (!namePattern.test(name)) {
+                nameError.textContent = "Please enter a valid name (letters only).";
+                return;
+            } else {
+                nameError.textContent = "";
+            }
+
+            const phone = document.getElementById("phone").value;
+            const phoneError = document.getElementById("phone-error");
+            const phonePattern = /^\d{10}$/;
+            if (!phonePattern.test(phone)) {
+                phoneError.textContent = "Phone number is not valid.";
+                return;
+            } else {
+                phoneError.textContent = "";
+            }
+
+            const province = document.getElementById("province").value;
+            const district = document.getElementById("district").value;
+            const ward = document.getElementById("ward").value;
+            const detailedAddress = document.getElementById("detailed-address").value;
+
+            if (!province || !district || !ward || !detailedAddress) {
+                alert("Please complete all address fields.");
+                return;
+            }
+
+            alert("Thank you for your order!");
+            localStorage.clear();
+            window.location.href = "home.html";
+        });
+    </script>
+</body>
+</html>

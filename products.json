@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Áo ngầu như bồn cầu",
+        "price": 200000,
+        "category": "Shirt",
+        "image": "pictures/S002.jpg"
+    },
+    {
+        "name": "Áo oách xà lách",
+        "price": 250000,
+        "category": "Shirt",
+        "image": "pictures/S001.jpg"
+    },
+    {
+        "name": "Quần què",
+        "price": 250000,
+        "category": "Pants",
+        "image": "pictures/P001.jpg"
+    },
+    {
+        "name": "Leather Bag",
+        "price": 500000,
+        "category": "Accessories",
+        "image": "bag.jpg"
+    }
+]

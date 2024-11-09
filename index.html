@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store</title>
+    <style>
+        /* CSS cho trang web */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .navbar { background-color: #333; color: #fff; padding: 1rem; text-align: center; }
+        .navbar a { color: #fff; text-decoration: none; margin: 0 1rem; }
+        .header { text-align: center; background-color: #ff6347; color: #fff; padding: 2rem 0; }
+        .search-container { margin: 1rem 0; text-align: center; }
+        .search-container input { padding: 0.5rem; width: 50%; border-radius: 5px; border: 1px solid #ddd; }
+        .category-filter { margin: 1rem 0; text-align: center; }
+        .category-filter select { padding: 0.5rem; width: 20%; border-radius: 5px; border: 1px solid #ddd; }
+        .products { display: flex; flex-wrap: wrap; justify-content: center; margin: 2rem 0; }
+        .product { background-color: #fff; border: 1px solid #ddd; border-radius: 5px; margin: 1rem; padding: 1rem; width: 220px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+        .product img { width: 100%; height: auto; border-radius: 5px; }
+        .product h3 { color: #333; }
+        .product p { color: #555; }
+        .product button { margin-top: 0.5rem; padding: 0.5rem; width: 48%; border-radius: 5px; cursor: pointer; border: none; color: #fff; }
+        .add-cart { background-color: #555; }
+        .buy-now { background-color: #ff6347; }
+        .cart { position: fixed; right: 1rem; bottom: 1rem; background-color: #fff; border: 1px solid #ddd; padding: 1rem; border-radius: 5px; width: 250px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+        .cart h3 { margin-bottom: 1rem; }
+        .cart-item { display: flex; flex-direction: column; margin-bottom: 0.5rem; }
+        .checkout { background-color: #ff6347; color: #fff; border: none; padding: 0.5rem 1rem; cursor: pointer; width: 100%; text-align: center; border-radius: 5px; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.4); }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 300px; text-align: center; border-radius: 5px; }
+        .modal select, .modal button, .modal input { width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px; }
+        .cart-item button { background-color: #f4f4f4; border: 1px solid #ddd; padding: 5px; border-radius: 5px; margin-top: 5px; cursor: pointer; }
+        .cart-item button:hover { background-color: #ff6347; color: #fff; }
+
+        /* CSS cho tiêu đề và thanh số lượng */
+        .quantity-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .quantity-container label {
+            font-weight: bold;
+        }
+        .quantity-container input {
+            width: 60px;
+            padding: 0.5rem;
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        /* CSS cho bảng chọn màu sắc và kích thước */
+        .option-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .option-container select {
+            width: 48%;
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <div class="header">
+        <h1>Welcome to Fashion Store!</h1>
+        <p>Your one-stop shop for the latest trends</p>
+    </div>
+
+    <!-- Tìm kiếm sản phẩm -->
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search for products..." onkeyup="filterProducts()">
+    </div>
+
+    <!-- Danh mục sản phẩm -->
+    <div class="category-filter">
+        <select id="category-filter" onchange="filterCategory()">
+            <option value="">All Categories</option>
+            <option value="Shirt">Shirt</option>
+            <option value="Pants">Pants</option>
+            <option value="Accessories">Accessories</option>
+        </select>
+    </div>
+
+    <div class="products" id="products">
+        
+    </div>
+
+    <!-- Giỏ hàng -->
+    <div class="cart" id="cart">
+        <h3>Shopping Cart</h3>
+        <div id="cart-items"></div>
+        <p>Total: <span id="total-price">0</span> VND</p>
+        <button class="checkout" onclick="goToCheckout()">Checkout</button>
+    </div>
+
+    <!-- Modal chọn màu, kích cỡ và số lượng -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h4>Choose options</h4>
+            <div class="option-container">
+                <label for="color">Choose Color</label>
+                <select id="color">
+                    <option value="Red">Red</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Black">Black</option>
+                </select>
+            </div>
+            <div class="option-container">
+                <label for="size">Choose Size</label>
+                <select id="size">
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                </select>
+            </div>
+            <div class="quantity-container">
+                <label for="quantity">Choose Quantity</label>
+                <input type="number" id="quantity" min="1" max="10" value="1" placeholder="Quantity" />
+            </div>
+            <button onclick="addToCartOrBuy()">Confirm</button>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    
+
+
+    <script>
+        let cart = [];
+        let totalPrice = 0;
+        let selectedProduct = null;
+        let directPurchase = false;
+        let editIndex = -1; // Biến tạm để lưu vị trí sản phẩm cần chỉnh sửa
+        let products = [];
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('products.json');
+                if (!response.ok) throw new Error("Không thể tải dữ liệu sản phẩm.");
+                products = await response.json();
+                displayProducts(products);  // Hiển thị sản phẩm sau khi tải dữ liệu
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu sản phẩm:", error);
+            }
+        }
+
+        // Gọi hàm loadProducts khi trang tải xong
+        document.addEventListener("DOMContentLoaded", loadProducts);
+
+    
+        function openModal(name, price, buyNow) {
+            selectedProduct = { name, price };
+            directPurchase = buyNow;
+            resetModalFields();  // Reset modal fields to default values
+            document.getElementById('productModal').style.display = 'block';
+            editIndex = -1; // Reset editIndex mỗi lần mở modal
+        }
+    
+        function resetModalFields() {
+            document.getElementById('color').value = 'Red';
+            document.getElementById('size').value = 'S';
+            document.getElementById('quantity').value = 1;
+        }
+    
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+            editIndex = -1; // Reset editIndex khi đóng modal
+        }
+    
+        function addToCartOrBuy() {
+            const color = document.getElementById('color').value;
+            const size = document.getElementById('size').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+
+            // Kiểm tra nếu số lượng không phải là số nguyên từ 1 đến 10
+            if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
+                alert("Vui lòng chọn số hợp lệ từ 1 đến 10.");
+                return; // Ngừng thực thi nếu điều kiện không hợp lệ
+            }
+
+            const product = {
+                name: selectedProduct.name,
+                price: selectedProduct.price,
+                color,
+                size,
+                quantity
+            };
+
+            if (editIndex >= 0) {
+                // Nếu đang trong quá trình chỉnh sửa, cập nhật sản phẩm trong giỏ hàng
+                cart[editIndex] = product;
+                editIndex = -1; // Đặt lại giá trị sau khi hoàn tất chỉnh sửa
+            } else {
+                // Thêm sản phẩm mới vào giỏ hàng
+                const existingProductIndex = cart.findIndex(item =>
+                    item.name === product.name && item.color === product.color && item.size === product.size
+                );
+
+                if (existingProductIndex >= 0) {
+                    cart[existingProductIndex].quantity += quantity;
+                } else {
+                    cart.push(product);
+                }
+            }
+
+            updateTotalPrice();
+
+            if (directPurchase) {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                localStorage.setItem('totalPrice', totalPrice);
+                window.location.href = 'checkout.html';
+            }
+
+            updateCart();
+            closeModal();  // Đóng modal sau khi thêm vào giỏ hàng hoặc mua
+        }
+
+
+    
+        function updateTotalPrice() {
+            totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('total-price').innerText = totalPrice;
+        }
+    
+        function updateCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            cartItemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
+                itemDiv.innerHTML = `
+                    ${item.name} (${item.color}, ${item.size}) x ${item.quantity} - ${item.price * item.quantity} VND
+                    <button onclick="editItemInCart(${index})">Edit</button>
+                    <button onclick="removeItemFromCart(${index})">Remove</button>
+                `;
+                cartItemsDiv.appendChild(itemDiv);
+            });
+        }
+    
+        function editItemInCart(index) {
+            const item = cart[index];
+            document.getElementById('productModal').style.display = 'block';
+            document.getElementById('color').value = item.color;
+            document.getElementById('size').value = item.size;
+            document.getElementById('quantity').value = item.quantity;
+    
+            selectedProduct = { name: item.name, price: item.price };
+            directPurchase = false;
+    
+            editIndex = index; // Lưu vị trí của sản phẩm cần chỉnh sửa trong mảng
+        }
+    
+        function removeItemFromCart(index) {
+            cart.splice(index, 1);
+            updateTotalPrice();
+            updateCart();
+        }
+    
+        function goToCheckout() {
+            if (cart.length === 0) {
+                alert("Giỏ hàng của bạn hiện đang trống!");
+            } else {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                localStorage.setItem('totalPrice', totalPrice);
+                window.location.href = 'checkout.html';
+            }
+        }
+    
+        function filterCategory() {
+            const category = document.getElementById('category-filter').value;
+            const filteredProducts = category ? products.filter(p => p.category === category) : products;
+            displayProducts(filteredProducts);
+        }
+    
+        function filterProducts() {
+            const searchText = document.getElementById('search').value.toLowerCase();
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchText));
+            displayProducts(filteredProducts);
+        }
+    
+        function displayProducts(productsToDisplay) {
+            const productsDiv = document.getElementById('products');
+            productsDiv.innerHTML = '';
+
+            productsToDisplay.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+                productDiv.dataset.category = product.category;
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.price} VND</p>
+                    <button class="add-cart" onclick="openModal('${product.name}', ${product.price}, false)">Thêm vào giỏ hàng</button>
+                    <button class="buy-now" onclick="openModal('${product.name}', ${product.price}, true)">Mua ngay</button>
+                `;
+                productsDiv.appendChild(productDiv);
+            });
+        }
+
+    
+        displayProducts(products);
+    </script>
+    
+    
+</body>
+</html>
