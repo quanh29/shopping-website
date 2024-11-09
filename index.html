@@ -106,7 +106,9 @@
     <div id="productModal" class="modal">
         <div class="modal-content">
             <h4>Choose options</h4>
-            <div class="option-container">
+    
+            <!-- Tùy chọn màu sắc -->
+            <div class="option-container" id="color-option" style="display: none;">
                 <label for="color">Choose Color</label>
                 <select id="color">
                     <option value="Red">Red</option>
@@ -114,7 +116,9 @@
                     <option value="Black">Black</option>
                 </select>
             </div>
-            <div class="option-container">
+    
+            <!-- Tùy chọn kích cỡ -->
+            <div class="option-container" id="size-option" style="display: none;">
                 <label for="size">Choose Size</label>
                 <select id="size">
                     <option value="S">S</option>
@@ -122,14 +126,18 @@
                     <option value="L">L</option>
                 </select>
             </div>
+    
+            <!-- Tùy chọn số lượng -->
             <div class="quantity-container">
                 <label for="quantity">Choose Quantity</label>
                 <input type="number" id="quantity" min="1" max="10" value="1" placeholder="Quantity" />
             </div>
+    
             <button onclick="addToCartOrBuy()">Confirm</button>
             <button onclick="closeModal()">Close</button>
         </div>
     </div>
+    
     
 
 
@@ -157,12 +165,23 @@
 
     
         function openModal(name, price, buyNow) {
+            // Lấy thông tin sản phẩm từ dữ liệu đã tải
+            const product = products.find(p => p.name === name);
+            if (!product) return; // Nếu không tìm thấy sản phẩm, thoát
+
             selectedProduct = { name, price };
             directPurchase = buyNow;
-            resetModalFields();  // Reset modal fields to default values
+
+            // Hiển thị tùy chọn phù hợp
+            document.getElementById('color-option').style.display = product.options.includes('color') ? 'block' : 'none';
+            document.getElementById('size-option').style.display = product.options.includes('size') ? 'block' : 'none';
+            document.getElementById('quantity').style.display = product.options.includes('quantity') ? 'block' : 'none';
+
+            resetModalFields();  // Reset modal về giá trị mặc định
             document.getElementById('productModal').style.display = 'block';
-            editIndex = -1; // Reset editIndex mỗi lần mở modal
+            editIndex = -1; // Đặt lại editIndex khi mở modal mới
         }
+
     
         function resetModalFields() {
             document.getElementById('color').value = 'Red';
