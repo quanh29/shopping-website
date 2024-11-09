@@ -21,10 +21,10 @@
         "options": ["color", "size", "quantity"]
     },
     {
-        "name": "Leather Bag",
+        "name": "Túi xách đẳng cấp",
         "price": 500000,
         "category": "Accessories",
-        "image": "bag.jpg",
+        "image": "pictures/A001.jpg",
         "options": [ "quantity"]
     }
 ]
