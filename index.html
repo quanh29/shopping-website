@@ -119,16 +119,70 @@
             font-size: 18px;
         }
 
-        
+        /* Thanh thông tin tài khoản (chỉ hiện khi đã đăng nhập) */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .account-info {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            min-width: 130px;
+        }
+
+        .account-info button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .account-info button:hover {
+            background-color: #ff4500;
+        }
+
+        /* Khi có lớp 'active', account-info sẽ hiện */
+        .account-info.active {
+            display: block;
+        }
+
+
     </style>
 </head>
 <body>
+    <!-- Thanh chức năng -->
     <div class="navbar">
         <a href="#home">Home</a>
         <a href="#products">Products</a>
         <a href="#contact">Contact</a>
-        <a href="auth.html" class="user-icon"><img src="pictures/website/user.png" alt="User Icon" style="width: 24px; height: 24px; vertical-align: middle;"></a>
+        <!-- Hiển thị họ tên người dùng sau khi đăng nhập -->
+        <span id="user-name" style="color: white; margin-right: 10px; font-weight: bold;"></span>
+        <div class="user-menu">
+            <a href="auth.html" class="user-icon" onclick="handleUserIconClick(event)">
+                <img src="pictures/website/user.png" alt="User Icon" style="width: 24px; height: 24px; vertical-align: middle;">
+            </a>
+            <div class="account-info" id="account-info">
+                <button onclick="viewAccount()">Thông tin tài khoản</button>
+                <button onclick="logout()">Đăng xuất</button>
+            </div>
+        </div>
     </div>
+        
+        
 
     <div class="header">
         <h1>Welcome to Fashion Store!</h1>
@@ -385,8 +439,61 @@
             });
         }
 
+        //lấy thông tin người dùng từ localStorage
+        document.addEventListener("DOMContentLoaded", function() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            const userNameSpan = document.getElementById('user-name');
 
-    
+            if (loggedInUser) {
+                userNameSpan.textContent = loggedInUser.fullname;
+                document.querySelector('.user-icon').href = "javascript:void(0);"; // Ngăn điều hướng tới trang đăng nhập
+            } else {
+                document.querySelector('.user-icon').href = "auth.html"; // Điều hướng tới trang đăng nhập nếu chưa đăng nhập
+            }
+        });
+
+        function handleUserIconClick(event) {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                event.preventDefault();
+                toggleAccountInfo();
+            }
+        }
+
+        function toggleAccountInfo() {
+            const accountInfo = document.getElementById('account-info');
+            accountInfo.classList.toggle('active');
+        }
+
+        function viewAccount() {
+            alert("Thông tin tài khoản!");
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = 'index.html';
+        }
+
+
+        // Xử lý đăng nhập
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(user => (user.contact === username || user.fullname === username) && user.password === password);
+            
+            if (user) {
+                alert("Đăng nhập thành công!");
+                localStorage.setItem('loggedInUser', JSON.stringify(user));
+                window.location.href = "index.html"; // Chuyển về trang chính sau khi đăng nhập
+            } else {
+                alert("Thông tin đăng nhập không chính xác.");
+            }
+        });
+
+
         displayProducts(products);
     </script>
     

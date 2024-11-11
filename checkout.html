@@ -31,7 +31,7 @@
                 <span class="error" id="name-error"></span>
             </div>
 
-            <!-- Sốđiện thoại -->
+            <!-- Số điện thoại -->
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <input type="text" id="phone" required>
@@ -94,7 +94,7 @@
 
         if (!cart || cart.length === 0) {
             alert("Your cart is empty!");
-            window.location.href = "home.html";
+            window.location.href = "index.html";
         } else {
             document.getElementById("checkout-total").innerText = totalPrice;
             const checkoutItems = document.getElementById("checkout-items");
@@ -178,7 +178,7 @@
 
             alert("Thank you for your order!");
             localStorage.clear();
-            window.location.href = "home.html";
+            window.location.href = "index.html";
         });
     </script>
 </body>
