@@ -3,28 +3,28 @@
         "name": "Áo ngầu như bồn cầu",
         "price": 200000,
         "category": "Shirt",
-        "image": "pictures/S002.jpg",
+        "image": "pictures/products/S002.jpg",
         "options": [ "size", "quantity"]
     },
     {
         "name": "Áo oách xà lách",
         "price": 250000,
         "category": "Shirt",
-        "image": "pictures/S001.jpg",
+        "image": "pictures/products/S001.jpg",
         "options": ["color", "size", "quantity"]
     },
     {
         "name": "Quần què",
         "price": 250000,
         "category": "Pants",
-        "image": "pictures/P001.jpg",
+        "image": "pictures/products/P001.jpg",
         "options": ["color", "size", "quantity"]
     },
     {
         "name": "Túi xách đẳng cấp",
         "price": 500000,
         "category": "Accessories",
-        "image": "pictures/A001.jpg",
+        "image": "pictures/products/A001.jpg",
         "options": [ "quantity"]
     }
 ]
