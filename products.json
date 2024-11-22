@@ -4,21 +4,26 @@
         "price": 200000,
         "category": "Shirt",
         "image": "pictures/products/S002.jpg",
-        "options": [ "size", "quantity"]
+        "options": [ "size", "quantity"],
+        "sizes": ["S", "M", "L", "XL"]
     },
     {
         "name": "Áo oách xà lách",
         "price": 250000,
         "category": "Shirt",
         "image": "pictures/products/S001.jpg",
-        "options": ["color", "size", "quantity"]
+        "options": ["color", "size", "quantity"],
+        "colors": ["White", "Blue", "Black"],
+        "sizes": ["S", "M", "L", "XL"]
     },
     {
         "name": "Quần què",
         "price": 250000,
         "category": "Pants",
         "image": "pictures/products/P001.jpg",
-        "options": ["color", "size", "quantity"]
+        "options": ["color", "size", "quantity"],
+        "colors": ["Red", "Blue", "Black"],
+        "sizes": ["S", "M", "L", "XL"]
     },
     {
         "name": "Túi xách đẳng cấp",
