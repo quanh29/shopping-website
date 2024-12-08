@@ -1,0 +1,27 @@
+[
+    {
+        "code": "SAVE50",
+        "type": "absolute",
+        "value": 50000,
+        "description": "Giảm 50,000 VND trực tiếp",
+        "valid_from": "2024-12-01",
+        "valid_to": "2024-12-3"
+    },
+    {
+        "code": "DISCOUNT10",
+        "type": "percentage",
+        "value": 10,
+        "maxDiscount": 100000,
+        "description": "Giảm 10% tối đa 100,000 VND",
+        "valid_from": "2024-12-01",
+        "valid_to": "2024-12-15"
+    },
+    {
+        "code": "FREESHIP",
+        "type": "absolute",
+        "value": 30000,
+        "description": "Giảm 30,000 VND phí vận chuyển",
+        "valid_from": "2024-12-01",
+        "valid_to": "2024-12-25"
+    }
+]

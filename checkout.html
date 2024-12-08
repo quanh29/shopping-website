@@ -15,13 +15,30 @@
         .checkout-item { display: flex; justify-content: space-between; }
         .btn { width: 100%; padding: 0.75rem; background-color: #ff6347; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .error { color: red; font-size: 0.9rem; }
+
+        /* CSS */
+        .error {
+            color: red;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Checkout</h2>
         <div class="checkout-items" id="checkout-items"></div>
-        <p>Total: <span id="checkout-total"></span>đ</p>
+       
+        <!-- Ngăn cách -->
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 1.5rem 0;">
+       
+        <p>Subtotal: <span id="checkout-subtotal"></span>đ</p>
+        <p>Discount (Voucher): <span id="discount-value">0</span>đ</p>
+        <p><strong>Total: <span id="checkout-total"></span>đ</strong></p>
+
+        <!-- Ngăn cách -->
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 1.5rem 0;">
 
         <form id="checkout-form">
             <!-- Họ và Tên -->
@@ -82,8 +99,20 @@
                 <select id="payment-method" required>
                     <option value="Credit Card">Credit Card</option>
                     <option value="PayPal">PayPal</option>
+                    <option value="COD">COD</option>
                 </select>
             </div>
+
+            <!-- Phần nhập Voucher -->
+            <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
+                <label for="voucher-code">Voucher</label>
+                <input type="text" id="voucher-code" placeholder="Enter voucher code">
+                <button type="button" class="btn" id="apply-voucher-btn">Apply Voucher</button>
+            </div>
+
+            <!-- Thông báo lỗi -->
+            <div id="voucher-error" class="error" style="margin-top: 0.5rem;"></div>
+
             <button type="submit" class="btn">Confirm Order</button>
         </form>
     </div>
@@ -105,13 +134,13 @@
                         ${item.size ? `- ${item.size}` : ''} 
                         x${item.quantity}
                     </span>
-                    <span>${item.price * item.quantity}đ</span>
+                    <span>${formatCurrency(item.price)}đ</span>
                 </div>
             `).join('');
             document.getElementById("checkout-total").innerText = totalPrice;
         }
 
-
+        //Data mẫu về quận, phường của thành phố
         const locationData = {
             "Hanoi": {
                 "District 1": ["Ward 1", "Ward 2"],
@@ -184,6 +213,92 @@
             localStorage.clear();
             window.location.href = "index.html";
         });
+
+        // dữ liệu voucher
+        let vouchers = [];
+
+        fetch("vouchers.json")
+            .then(response => response.json())
+            .then(data => {
+                vouchers = data;
+            })
+            .catch(error => {
+                console.error("Error loading vouchers:", error);
+            });
+
+        // Biến để lưu giá trị khuyến mãi hiện tại
+        let discount = 0;
+
+        // Hiển thị subtotal và total ban đầu
+        document.getElementById("checkout-subtotal").textContent = formatCurrency(parseInt(totalPrice, 10));
+        document.getElementById("checkout-total").textContent = formatCurrency(parseInt(totalPrice, 10) - discount);
+
+        // Hàm tính toán giá trị khuyến mãi
+        function calculateDiscount(voucherCode) {
+            const voucher = vouchers.find(v => v.code === voucherCode);
+            if (!voucher) {
+                return { valid: false, message: "Voucher code is invalid." };
+            }
+
+            let discountValue = 0;
+            const total = parseInt(totalPrice, 10);
+
+            if (voucher.type === "absolute") {
+                discountValue = voucher.value;
+            } else if (voucher.type === "percentage") {
+                discountValue = Math.min((voucher.value / 100) * total, voucher.maxDiscount || Infinity);
+            }
+
+            discountValue = Math.min(discountValue, total); // Không giảm quá giá trị đơn hàng
+            return { valid: true, discount: discountValue };
+        }
+
+        // Xử lý khi bấm nút áp dụng Voucher
+        document.getElementById("apply-voucher-btn").addEventListener("click", function () {
+            const voucherCode = document.getElementById("voucher-code").value.trim();
+            const voucherError = document.getElementById("voucher-error");
+
+            if (!voucherCode) {
+                voucherError.textContent = "Please enter a voucher code.";
+                return;
+            }
+
+            const result = calculateDiscount(voucherCode);
+
+            if (!result.valid) {
+                voucherError.textContent = result.message;
+                return;
+            }
+
+            // Cập nhật giá trị khuyến mãi và tổng tiền
+            discount = result.discount;
+            const finalTotal = Math.max(0, parseInt(totalPrice, 10) - discount);
+
+            // Hiển thị giá trị
+            document.getElementById("discount-value").textContent = formatCurrency(discount);
+            document.getElementById("checkout-total").textContent = formatCurrency(parseInt(totalPrice, 10) - discount);
+
+            voucherError.textContent = ""; // Xóa lỗi nếu có
+        });
+
+        // Cập nhật khi xác nhận đơn hàng
+        document.getElementById("checkout-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Các bước kiểm tra hợp lệ khác đã có
+
+            const finalPrice = Math.max(0, parseInt(totalPrice, 10) - discount);
+            
+
+            localStorage.clear();
+            window.location.href = "index.html";
+        });
+
+        // Hàm định dạng giá tiền
+        function formatCurrency(value) {
+            return value.toLocaleString("vi-VN"); // Định dạng số theo chuẩn Việt Nam
+        }
+
     </script>
 </body>
 </html>
