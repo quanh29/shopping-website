@@ -23,6 +23,29 @@
             margin: 0;
         }
         
+        #success-message h1 {
+            color: #28a745;
+        }
+
+        #success-message p {
+            margin: 1rem 0;
+        }
+
+        #success-message .btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        #success-message .btn:hover {
+            background-color: #e5533c;
+        }
+        
     </style>
 </head>
 <body>
@@ -108,6 +131,7 @@
                 <label for="voucher-code">Voucher</label>
                 <input type="text" id="voucher-code" placeholder="Enter voucher code">
                 <button type="button" class="btn" id="apply-voucher-btn">Apply Voucher</button>
+                <button type="button" class="btn" id="remove-voucher-btn" style="background-color: #6c757d; display: none;">Remove Voucher</button>
             </div>
 
             <!-- Thông báo lỗi -->
@@ -115,6 +139,14 @@
 
             <button type="submit" class="btn">Confirm Order</button>
         </form>
+
+        <!-- Thông báo đặt hàng thành công -->
+        <div id="success-message" style="display: none; text-align: center; padding: 2rem; background-color: #f4f4f4; border-radius: 10px; margin-top: 2rem;">
+            <h1 style="color: #28a745;">Order Successful!</h1>
+            <p>Thank you for your purchase. Your order has been placed successfully.</p>
+            <button id="continue-shopping" class="btn" style="margin-top: 1rem;">Continue Shopping</button>
+        </div>
+        
     </div>
 
     <script>
@@ -209,9 +241,13 @@
                 return;
             }
 
-            alert("Thank you for your order!");
+            //Tính giá cuối cùng sau khi áp voucher
+            const finalPrice = Math.max(0, parseInt(totalPrice, 10) - discount);
+
+            //alert("Thank you for your order!");
             localStorage.clear();
-            window.location.href = "index.html";
+            //window.location.href = "index.html";
+            window.location.href = "success.html"; // Chuyển đến trang thông báo thành công
         });
 
         // dữ liệu voucher
@@ -279,26 +315,31 @@
             document.getElementById("checkout-total").textContent = formatCurrency(parseInt(totalPrice, 10) - discount);
 
             voucherError.textContent = ""; // Xóa lỗi nếu có
-        });
 
-        // Cập nhật khi xác nhận đơn hàng
-        document.getElementById("checkout-form").addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            // Các bước kiểm tra hợp lệ khác đã có
-
-            const finalPrice = Math.max(0, parseInt(totalPrice, 10) - discount);
-            
-
-            localStorage.clear();
-            window.location.href = "index.html";
+             // Hiển thị nút Remove Voucher
+            document.getElementById("remove-voucher-btn").style.display = "inline-block";
         });
 
         // Hàm định dạng giá tiền
         function formatCurrency(value) {
             return value.toLocaleString("vi-VN"); // Định dạng số theo chuẩn Việt Nam
         }
+        
+        // Xử lý khi bấm nút xóa Voucher
+        document.getElementById("remove-voucher-btn").addEventListener("click", function () {
+            const voucherError = document.getElementById("voucher-error");
 
+            // Đặt lại giá trị khuyến mãi và tổng tiền
+            discount = 0;
+            document.getElementById("discount-value").textContent = formatCurrency(discount);
+            document.getElementById("checkout-total").textContent = formatCurrency(parseInt(totalPrice, 10));
+            document.getElementById("voucher-code").value = ""; // Xóa mã voucher nhập vào
+
+            voucherError.textContent = ""; // Xóa thông báo lỗi nếu có
+            
+            // Ẩn nút Remove Voucher
+            document.getElementById("remove-voucher-btn").style.display = "none";
+        });
     </script>
 </body>
 </html>

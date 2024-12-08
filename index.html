@@ -111,7 +111,7 @@
         }
         .add-cart { /* Nút thêm vào giỏ */
             padding: 0.75rem 1rem;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         .buy-now { /* Nút mua ngay */
@@ -435,7 +435,7 @@
     
         function goToCheckout() {
             if (cart.length === 0) {
-                alert("Giỏ hàng của bạn hiện đang trống!");
+                alert("Your cart is empty!");
             } else {
                 localStorage.setItem('cart', JSON.stringify(cart));
                 localStorage.setItem('totalPrice', totalPrice);
@@ -468,8 +468,8 @@
                     <h3>${product.name}</h3>
                     <p>${product.price} VND</p>
                     <div class="product-buttons">
-                        <button class="add-cart" onclick="openModal('${product.name}', ${product.price}, false)">Thêm vào giỏ hàng</button>
-                        <button class="buy-now" onclick="openModal('${product.name}', ${product.price}, true)">Mua ngay</button>
+                        <button class="add-cart" onclick="openModal('${product.name}', ${product.price}, false)">Add to cart</button>
+                        <button class="buy-now" onclick="openModal('${product.name}', ${product.price}, true)">Buy now</button>
                     </div>
                 `;
                 productsDiv.appendChild(productDiv);
