@@ -160,6 +160,16 @@
             display: block;
         }
 
+        a.product-link {
+            text-decoration: none; /* Xóa gạch dưới */
+            color: inherit; /* Giữ nguyên màu sắc theo ngữ cảnh */
+            cursor: pointer; /* Hiển thị con trỏ khi di chuột qua */
+        }
+
+        a.product-link:hover {
+            color: #ff6347; /* Tùy chọn: Thay đổi màu khi hover */
+            text-decoration: none; /* Đảm bảo không gạch dưới khi hover */
+        }
 
     </style>
 </head>
@@ -180,9 +190,7 @@
                 <button onclick="logout()">Đăng xuất</button>
             </div>
         </div>
-    </div>
-        
-        
+    </div>        
 
     <div class="header">
         <h1>Welcome to Fashion Store!</h1>
@@ -466,17 +474,18 @@
                 // Sử dụng `encodeURIComponent` để tạo URL an toàn
                 const productURL = `product.html?name=${encodeURIComponent(product.name)}`;
 
-                productDiv.innerHTML = `
-                    <a href="${productURL}">
-                        <img src="${product.image}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                    </a>
-                    <p>${product.price.toLocaleString('vi-VN')} VND</p>
-                    <div class="product-buttons">
-                        <button class="add-cart" onclick="openModal('${product.name}', ${product.price}, false)">Add to cart</button>
-                        <button class="buy-now" onclick="openModal('${product.name}', ${product.price}, true)">Buy now</button>
-                    </div>
-                `;
+            productDiv.innerHTML = `
+                <a href="${productURL}" class="product-link">
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                </a>
+                <p>${product.price.toLocaleString('vi-VN')} VND</p>
+                <div class="product-buttons">
+                    <button class="add-cart" onclick="openModal('${product.name}', ${product.price}, false)">Add to cart</button>
+                    <button class="buy-now" onclick="openModal('${product.name}', ${product.price}, true)">Buy now</button>
+                </div>
+            `;
+
                 productsDiv.appendChild(productDiv);
             });
         }

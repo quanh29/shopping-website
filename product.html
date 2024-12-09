@@ -77,9 +77,102 @@
             line-height: 1.6;
             text-align: justify;
         }
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            display: flex;
+            justify-content: center; /* Căn giữa tất cả nội dung */
+            align-items: center;
+            gap: 25px; /* Tạo khoảng cách giữa các phần tử */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px; /* Khoảng cách giữa các liên kết */
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #ff6347;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Khoảng cách giữa tên và icon */
+        }
+
+        .user-icon img {
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .account-info {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            min-width: 130px;
+        }
+
+        .account-info button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .account-info button:hover {
+            background-color: #ff4500;
+        }
+
+        .account-info.active {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#products">Products</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="user-menu">
+            <span id="user-name" style="color: white; margin-right: 10px; font-weight: bold;"></span>
+            <a href="auth.html" class="user-icon" onclick="handleUserIconClick(event)">
+                <img src="pictures/website/user.png" alt="User Icon" style="width: 24px; height: 24px; vertical-align: middle;">
+            </a>
+            <div class="account-info" id="account-info">
+                <button onclick="viewAccount()">Thông tin tài khoản</button>
+                <button onclick="logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </div>        
+
     <div class="container" id="product-container">
         <!-- Thông tin sản phẩm sẽ được hiển thị ở đây -->
     </div>
@@ -147,6 +240,41 @@
 
         // Gọi hàm để tải dữ liệu sản phẩm
         loadProductData();
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            const userNameSpan = document.getElementById('user-name');
+
+            if (loggedInUser) {
+                userNameSpan.textContent = loggedInUser.fullname;
+                document.querySelector('.user-icon').href = "javascript:void(0);";
+            } else {
+                document.querySelector('.user-icon').href = "auth.html";
+            }
+        });
+
+        function handleUserIconClick(event) {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                event.preventDefault();
+                toggleAccountInfo();
+            }
+        }
+
+        function toggleAccountInfo() {
+            const accountInfo = document.getElementById('account-info');
+            accountInfo.classList.toggle('active');
+        }
+
+        function viewAccount() {
+            alert("Thông tin tài khoản!");
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = 'index.html';
+        }
+
     </script>
 </body>
 </html>
