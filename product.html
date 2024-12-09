@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 20px;
+        }
+
+        .product-image {
+            width: 50%; /* Hình ảnh chiếm 50% chiều ngang */
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .product-details {
+            flex: 1; /* Thông tin sản phẩm chiếm phần còn lại */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-info {
+            margin-bottom: 2rem;
+        }
+
+        .product-info h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-info p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .product-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .product-buttons button {
+            padding: 0.75rem;
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .product-buttons button:hover {
+            background-color: #e5533c;
+        }
+
+        .product-description {
+            margin-top: 1rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="product-container">
+        <!-- Thông tin sản phẩm sẽ được hiển thị ở đây -->
+    </div>
+
+    <script>
+        // Lấy thông tin từ URL
+        const queryParams = new URLSearchParams(window.location.search);
+        const productName = queryParams.get('name');
+
+        // Lấy dữ liệu từ file products.json
+        async function loadProductData() {
+            try {
+                const response = await fetch('products.json');
+                if (!response.ok) {
+                    throw new Error("Không thể tải dữ liệu sản phẩm.");
+                }
+
+                const products = await response.json();
+                const product = products.find(p => p.name === productName);
+
+                if (!product) {
+                    document.getElementById('product-container').innerHTML = `<p>Product not found!</p>`;
+                } else {
+                    displayProduct(product);
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('product-container').innerHTML = `<p>Failed to load product data.</p>`;
+            }
+        }
+
+        // Hiển thị thông tin sản phẩm
+        function displayProduct(product) {
+            const productContainer = document.getElementById('product-container');
+
+            productContainer.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <div class="product-details">
+                    <div class="product-info">
+                        <h2>${product.name}</h2>
+                        <p><strong>Price:</strong> ${product.price.toLocaleString('vi-VN')} VND</p>
+                    </div>
+                    <div class="product-buttons">
+                        <button onclick="handleAddToCart('${product.name}')">Add to cart</button>
+                        <button onclick="handleBuyNow('${product.name}')">Buy now</button>
+                    </div>
+                    <div class="product-description">
+                        <p>${product.description}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Hàm xử lý "Add to cart"
+        function handleAddToCart(productName) {
+            alert(`Sản phẩm ${productName} đã được thêm vào giỏ hàng!`);
+            // Logic xử lý thêm vào giỏ hàng
+        }
+
+        // Hàm xử lý "Buy now"
+        function handleBuyNow(productName) {
+            alert(`Mua ngay sản phẩm ${productName}!`);
+            // Logic xử lý mua ngay
+        }
+
+        // Gọi hàm để tải dữ liệu sản phẩm
+        loadProductData();
+    </script>
+</body>
+</html>

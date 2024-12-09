@@ -4,8 +4,9 @@
         "price": 200000,
         "category": "Shirt",
         "image": "pictures/products/S002.jpg",
-        "options": [ "size", "quantity"],
-        "sizes": ["S", "M", "L", "XL"]
+        "options": ["size", "quantity"],
+        "sizes": ["S", "M", "L", "XL"],
+        "description": "Áo khoác với thiết kế hiện đại, chất liệu bền đẹp phù hợp cho mọi thời tiết."
     },
     {
         "name": "Áo thun",
@@ -14,7 +15,8 @@
         "image": "pictures/products/S001.jpg",
         "options": ["color", "size", "quantity"],
         "colors": ["White", "Blue", "Black"],
-        "sizes": ["S", "M", "L", "XL"]
+        "sizes": ["S", "M", "L", "XL"],
+        "description": "Áo thun thoải mái, phù hợp cho mọi hoạt động thường ngày."
     },
     {
         "name": "Quần Jean",
@@ -23,13 +25,15 @@
         "image": "pictures/products/P001.jpg",
         "options": ["color", "size", "quantity"],
         "colors": ["Red", "Blue", "Black"],
-        "sizes": ["S", "M", "L", "XL"]
+        "sizes": ["S", "M", "L", "XL"],
+        "description": "Quần Jean năng động, thời trang với nhiều màu sắc và kích thước lựa chọn."
     },
     {
         "name": "Túi xách",
         "price": 500000,
         "category": "Accessories",
         "image": "pictures/products/A001.jpg",
-        "options": [ "quantity"]
+        "options": ["quantity"],
+        "description": "Túi xách cao cấp, sang trọng, hoàn hảo cho mọi dịp."
     }
 ]

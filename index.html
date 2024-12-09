@@ -359,9 +359,15 @@
             // Tạo sản phẩm nếu không có lỗi
             const product = { name: selectedProduct.name, price: selectedProduct.price, color, size, quantity };
 
-            if (editIndex >= 0) {
-                cart[editIndex] = product;
+            if (directPurchase) {
+                // Xử lý cho "Mua ngay"
+                const cart = [product]; // Giỏ hàng chỉ chứa sản phẩm hiện tại
+                const totalPrice = product.price * product.quantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                localStorage.setItem('totalPrice', totalPrice);
+                window.location.href = 'checkout.html'; // Chuyển đến trang thanh toán
             } else {
+                // Xử lý logic thêm vào giỏ hàng
                 const existingIndex = cart.findIndex(item =>
                     item.name === product.name && item.color === product.color && item.size === product.size
                 );
@@ -370,18 +376,11 @@
                 } else {
                     cart.push(product);
                 }
+                updateCart();
+                updateTotalPrice();
             }
 
-            updateCart();
-            updateTotalPrice();
-
-            if (directPurchase) {
-                localStorage.setItem('cart', JSON.stringify(cart));
-                localStorage.setItem('totalPrice', totalPrice);
-                window.location.href = 'checkout.html';
-            }
-
-            closeModal();
+            closeModal(); // Đóng modal
         }
 
 
@@ -463,10 +462,16 @@
                 const productDiv = document.createElement('div');
                 productDiv.classList.add('product');
                 productDiv.dataset.category = product.category;
+
+                // Sử dụng `encodeURIComponent` để tạo URL an toàn
+                const productURL = `product.html?name=${encodeURIComponent(product.name)}`;
+
                 productDiv.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>${product.price} VND</p>
+                    <a href="${productURL}">
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                    </a>
+                    <p>${product.price.toLocaleString('vi-VN')} VND</p>
                     <div class="product-buttons">
                         <button class="add-cart" onclick="openModal('${product.name}', ${product.price}, false)">Add to cart</button>
                         <button class="buy-now" onclick="openModal('${product.name}', ${product.price}, true)">Buy now</button>
@@ -475,6 +480,7 @@
                 productsDiv.appendChild(productDiv);
             });
         }
+
 
         //lấy thông tin người dùng từ localStorage
         document.addEventListener("DOMContentLoaded", function() {
