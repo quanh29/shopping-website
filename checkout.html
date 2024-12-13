@@ -46,6 +46,110 @@
             background-color: #e5533c;
         }
         
+        /* Thanh MENU */
+        .navbar { 
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: fixed; /* Giữ cố định ở đầu trang */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Đảm bảo nó nằm trên các phần tử khác */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        body {
+            margin: 0;
+            padding-top: 60px; /* Tạo khoảng cách với navbar để không bị che */
+        }
+        .navbar a { 
+            color: #fff;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+        
+        /* Thanh thông tin tài khoản (chỉ hiện khi đã đăng nhập) */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .account-info {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            min-width: 130px;
+        }
+
+        .account-info button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .account-info button:hover {
+            background-color: #ff4500;
+        }
+
+        /* Khi có lớp 'active', account-info sẽ hiện */
+        .account-info.active {
+            display: block;
+        }
+        /* Thanh thông tin tài khoản (chỉ hiện khi đã đăng nhập) */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .account-info {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            min-width: 130px;
+        }
+
+        .account-info button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .account-info button:hover {
+            background-color: #ff4500;
+        }
+
+        /* Khi có lớp 'active', account-info sẽ hiện */
+        .account-info.active {
+            display: block;
+        }
+        
     </style>
 </head>
 <body>
@@ -147,7 +251,21 @@
             <button id="continue-shopping" class="btn" style="margin-top: 1rem;">Continue Shopping</button>
         </div>
         
-    </div>
+        <div class="navbar">
+            <a href="index.html">Home</a> <!-- Nút Home trở về index.html -->
+            <a href="#products">Products</a>
+            <a href="#contact">Contact</a>
+            <span id="user-name" style="color: white; margin-right: 10px; font-weight: bold;"></span>
+            <div class="user-menu">
+                <a href="auth.html" class="user-icon" onclick="handleUserIconClick(event)">
+                    <img src="pictures/website/user.png" alt="User Icon" style="width: 24px; height: 24px; vertical-align: middle;">
+                </a>
+                <div class="account-info" id="account-info">
+                    <button onclick="viewAccount()">Thông tin tài khoản</button>
+                    <button onclick="logout()">Đăng xuất</button>
+                </div>
+            </div>
+        </div>        
 
     <script>
         const cart = JSON.parse(localStorage.getItem("cart"));
@@ -339,6 +457,37 @@
             
             // Ẩn nút Remove Voucher
             document.getElementById("remove-voucher-btn").style.display = "none";
+        });
+
+        function handleUserIconClick(event) {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                event.preventDefault();
+                toggleAccountInfo();
+            }
+        }
+
+        function toggleAccountInfo() {
+            const accountInfo = document.getElementById('account-info');
+            accountInfo.classList.toggle('active');
+        }
+
+        function viewAccount() {
+            alert("Thông tin tài khoản!");
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            const userNameSpan = document.getElementById('user-name');
+
+            if (loggedInUser) {
+                userNameSpan.textContent = loggedInUser.fullname;
+            }
         });
     </script>
 </body>
